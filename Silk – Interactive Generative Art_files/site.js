@@ -1492,17 +1492,17 @@
         //}
         //_this.useMic=true;
         //x-browser
-        if (!navigator.getUserMedia)
-          navigator.getUserMedia = (navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia ||
-          navigator.msGetUserMedia);
+        if (!navigator.mediaDevices.getUserMedia)
+          navigator.mediaDevices.getUserMedia = (navigator.mediaDevices.getUserMedia ||
+          navigator.mediaDevices.webkitGetUserMedia ||
+          navigator.mediaDevices.mozGetUserMedia ||
+          navigator.mediaDevices.msGetUserMedia);
         if (!navigator.cancelAnimationFrame)
           navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
         if (!navigator.requestAnimationFrame)
           navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
 
-        navigator.getUserMedia(
+        navigator.mediaDevices.getUserMedia(
             {
               //也等於 {audio: true}
               "audio": {
