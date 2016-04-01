@@ -1492,37 +1492,22 @@
         //}
         //_this.useMic=true;
         //x-browser
-        var promisifiedOldGUM = function(constraints, successCallback, errorCallback) {
 
-          // First get ahold of getUserMedia, if present
-          var getUserMedia = (navigator.getUserMedia ||
+        if (!navigator.mediaDevices.getUserMedia)
+          navigator.mediaDevices.getUserMedia = (navigator.mediaDevices.getUserMedia ||
+          navigator.mediaDevices.webkitGetUserMedia ||
+          navigator.mediaDevices.mozGetUserMedia ||
+          navigator.mediaDevices.msGetUserMedia ||
+          navigator.getUserMedia ||
           navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia);
+          navigator.mozGetUserMedia ||
+          navigator.msGetUserMedia);
+        
+        if (!navigator.cancelAnimationFrame)
+          navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
+        if (!navigator.requestAnimationFrame)
+          navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
 
-          // Some browsers just don't implement it - return a rejected promise with an error
-          // to keep a consistent interface
-          if(!getUserMedia) {
-            return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
-          }
-
-          // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
-          return new Promise(function(successCallback, errorCallback) {
-            getUserMedia.call(navigator, constraints, successCallback, errorCallback);
-          });
-
-        }
-
-        // Older browsers might not implement mediaDevices at all, so we set an empty object first
-        if(navigator.mediaDevices === undefined) {
-          navigator.mediaDevices = {};
-        }
-
-        // Some browsers partially implement mediaDevices. We can't just assign an object
-        // with getUserMedia as it would overwrite existing properties.
-        // Here, we will just add the getUserMedia property if it's missing.
-        if(navigator.mediaDevices.getUserMedia === undefined) {
-          navigator.mediaDevices.getUserMedia = promisifiedOldGUM;
-        }
         navigator.mediaDevices.getUserMedia(
             {
               //也等於 {audio: true}
@@ -1535,7 +1520,9 @@
                 },
                 "optional": []
               }
-            }, function(stream) {
+            },
+
+            function(stream) {
               inputPoint = audioContext.createGain();
               realAudioInput = audioContext.createMediaStreamSource(stream);
               audioInput = realAudioInput;
@@ -1549,14 +1536,13 @@
               inputPoint.connect( micanalyserNode );
 
               //isPlayingAudio = true;
-              //updateAnalysers();
+              updateAnalysers();
             },
             // errorCallback
             function(err) {
               alert("The following error occured: " + err);
             }
         );
-        updateAnalysers();
       }
       var MIN_SAMPLES = 0;
       function autoCorrelate( buf, sampleRate ) {
@@ -1656,7 +1642,7 @@
 
         x=canvas.width*(1+micmagnitude)/2;
         y=canvas.height*(1+micmagnitude)/2;
-        console.log(micmagnitude);
+        //console.log(micmagnitude);
 
         //if(magnitude>90){
         //  _this.silkSettingsState.color="#555555";
