@@ -1294,7 +1294,7 @@
       // Step 2: Load our Sound using XHR
       function startSound() {
         //_this.useMic=false;
-        getMicInput()
+        //getMicInput()
         initSound();
 
         // Note: this loads asynchronously
@@ -1492,17 +1492,17 @@
         //}
         //_this.useMic=true;
         //x-browser
-        if (!navigator.getUserMedia)
-          navigator.getUserMedia = (navigator.getUserMedia ||
-          navigator.webkitGetUserMedia ||
-          navigator.mozGetUserMedia ||
-          navigator.msGetUserMedia);
+        if (!navigator.mediaDevices.getUserMedia)
+          navigator.mediaDevices.getUserMedia = (navigator.mediaDevices.getUserMedia ||
+          navigator.mediaDevices.webkitGetUserMedia ||
+          navigator.mediaDevices.mozGetUserMedia ||
+          navigator.mediaDevices.msGetUserMedia);
         if (!navigator.cancelAnimationFrame)
           navigator.cancelAnimationFrame = navigator.webkitCancelAnimationFrame || navigator.mozCancelAnimationFrame;
         if (!navigator.requestAnimationFrame)
           navigator.requestAnimationFrame = navigator.webkitRequestAnimationFrame || navigator.mozRequestAnimationFrame;
 
-        navigator.getUserMedia(
+        navigator.mediaDevices.getUserMedia(
             {
               //也等於 {audio: true}
               "audio": {
@@ -1528,7 +1528,7 @@
               inputPoint.connect( micanalyserNode );
 
               //isPlayingAudio = true;
-              //updateAnalysers();
+              updateAnalysers();
             },
             // errorCallback
             function(err) {
@@ -1632,8 +1632,8 @@
         //x=((canvas.width/2)+((canvas.width/2)*(Math.cos(w*_this.frameTime))));
         //y=((canvas.height/2)+((canvas.height/2)*(Math.cos(w*_this.frameTime))));
 
-        x=canvas.width*(1+magnitude)/2;
-        y=canvas.height*(1+magnitude)/2;
+        x=canvas.width*(1+micmagnitude)/2;
+        y=canvas.height*(1+micmagnitude)/2;
         //console.log(micmagnitude);
 
         //if(magnitude>90){
@@ -1668,24 +1668,29 @@
         //  change();
         //}
 
-        //BEAT偵測
-        if(micmagnitude>0.6){
+
+        if(_this.frameTime%200==0){
           onBeat(_this.silkCanvas);
         }
-        if (magnitude  > beatCutOff && magnitude > BEAT_MIN && !beat){
-          beatcount++;
-          //onBeat(_this.silkCanvas);
-          beatCutOff = magnitude *1.4;
-          beatTime = 0;
-        }
-        else{
-          if (beatTime <= 100){
-            beatTime ++;
-          }else{
-            beatCutOff *= 0.99;
-            beatCutOff = Math.max(beatCutOff,BEAT_MIN);
-          }
-        }
+        //BEAT偵測
+        //if(micmagnitude>0.6){
+        //  onBeat(_this.silkCanvas);
+        //}
+        //if (magnitude  > beatCutOff && magnitude > BEAT_MIN && !beat){
+        //  beatcount++;
+        //  //onBeat(_this.silkCanvas);
+        //  beatCutOff = magnitude *1.4;
+        //  beatTime = 0;
+        //}
+        //else{
+        //  if (beatTime <= 100){
+        //    beatTime ++;
+        //  }else{
+        //    beatCutOff *= 0.99;
+        //    beatCutOff = Math.max(beatCutOff,BEAT_MIN);
+        //  }
+        //}
+
         _this.disappear(_this.silkCanvas);
         //console.log(_this.silkSettingsState.color+","+_this.silkSettingsState.highlightColor+","+_this.silkSettingsState.symMirror+","+_this.silkSettingsState.spiralCopies);
         rafID = window.requestAnimationFrame( updateAnalysers );
@@ -1759,7 +1764,8 @@
         //}
         //return _this.inputIsActive = false;
         if(!_this.isPlayingAudio&&_this.audio) {
-          playSound();
+          //playSound();
+          getMicInput();
         }
       };
     })(this));
