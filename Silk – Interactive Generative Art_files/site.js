@@ -1549,14 +1549,14 @@
               inputPoint.connect( micanalyserNode );
 
               //isPlayingAudio = true;
-              updateAnalysers();
-              console.log("hi");
+              //updateAnalysers();
             },
             // errorCallback
             function(err) {
               alert("The following error occured: " + err);
             }
         );
+        updateAnalysers();
       }
       var MIN_SAMPLES = 0;
       function autoCorrelate( buf, sampleRate ) {
@@ -1656,7 +1656,7 @@
 
         x=canvas.width*(1+micmagnitude)/2;
         y=canvas.height*(1+micmagnitude)/2;
-        //console.log(micmagnitude);
+        console.log(micmagnitude);
 
         //if(magnitude>90){
         //  _this.silkSettingsState.color="#555555";
